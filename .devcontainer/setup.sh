@@ -1,9 +1,9 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 echo "=== 시스템 패키지 설치 중 ==="
-apt-get update -q
-DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+sudo apt-get update -q
+sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     r-base \
     r-base-dev \
     libssl-dev \
@@ -17,11 +17,29 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     libjpeg-dev
 
 echo "=== R 패키지 설치 중 (languageserver, httpgd) ==="
-# Posit Package Manager의 Ubuntu 24.04 (noble) 바이너리 저장소 사용 → 컴파일 없이 빠르게 설치
-Rscript -e "
-  options(repos = c(CRAN = 'https://packagemanager.posit.co/cran/__linux__/noble/latest'))
-  install.packages(c('languageserver', 'httpgd'))
-  cat('패키지 설치 완료:', paste(c('languageserver', 'httpgd'), collapse = ', '), '\n')
-"
+sudo Rscript -e '
+  options(repos = c(
+    CRAN = "https://packagemanager.posit.co/cran/__linux__/noble/latest"
+  ))
+
+  packages <- c("languageserver", "httpgd")
+  install.packages(packages)
+
+  installed <- vapply(
+    packages,
+    requireNamespace,
+    logical(1),
+    quietly = TRUE
+  )
+
+  if (!all(installed)) {
+    stop(
+      "설치 실패: ",
+      paste(packages[!installed], collapse = ", ")
+    )
+  }
+
+  cat("R 패키지 설치 완료\n")
+'
 
 echo "=== 설치 완료 ==="
