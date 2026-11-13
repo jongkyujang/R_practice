@@ -1,9 +1,11 @@
 {
   "name": "R 기초 실습",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
-  "hostRequirements": { "cpus": 2 },
-  "postCreateCommand": "bash .devcontainer/setup.sh",
-  "waitFor": "postCreateCommand",
+  "hostRequirements": {
+    "cpus": 2
+  },
+  "onCreateCommand": "bash .devcontainer/setup.sh",
+  "waitFor": "onCreateCommand",
   "customizations": {
     "codespaces": {
       "openFiles": ["README.md"]
@@ -13,7 +15,6 @@
         "REditorSupport.r"
       ],
       "settings": {
-        "r.plot.useHttpgd": true,
         "r.rterm.linux": "/usr/bin/R",
         "terminal.integrated.fontSize": 15,
         "editor.fontSize": 15,
