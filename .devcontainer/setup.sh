@@ -6,6 +6,7 @@ sudo apt-get update -q
 sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     r-base \
     r-base-dev \
+    libuv1-dev \
     libssl-dev \
     libcurl4-openssl-dev \
     libxml2-dev \
